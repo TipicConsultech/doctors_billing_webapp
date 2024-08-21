@@ -66,6 +66,20 @@ Route::get('/user', function (Request $request) {
 
 
 
+//contact Us
+use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\InquiryController;
+use App\Models\Inquiry;
+
+Route::post('/contactUs', [ContactUsController::class, 'store']);
+
+Route::get('/viewcontact', [ContactUsController::class, 'viewcontact']);
+
+Route::get('/inquiry', [InquiryController::class, 'inquiry']);
+
+
+
+
 // routes/api.php
 use App\Http\Controllers\InvoiceCustomizationController;
 
