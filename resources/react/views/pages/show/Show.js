@@ -34,7 +34,7 @@ export default function ShowContactUs() {
       <CCol xs={12}>
         <CCard className="mb-3">
           <CCardHeader>
-            <strong>Contact Us Data</strong>
+            <strong>Enquiry Report</strong>
           </CCardHeader>
           <CCardBody>
             <CTable>

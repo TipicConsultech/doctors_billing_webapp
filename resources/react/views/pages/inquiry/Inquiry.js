@@ -30,7 +30,7 @@ function All_Reports() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Container>
         <Stack spacing="lg">
-          <Text size="xl" weight={500}>Inquiry Data</Text>
+          <Text size="xl" weight={500}>Enquiry Report</Text>
           {errorMessage && <Text color="red">{errorMessage}</Text>}
           <Table>
             <thead>
