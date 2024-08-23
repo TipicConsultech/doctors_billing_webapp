@@ -40,21 +40,21 @@ export default function fetchNavItems(){
     // },
     {
       component: CNavItem,
-      name: 'Show Contact Us',
+      name: 'Show Enquiry',
       to: '/inquiry',
       icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
     },
 
-    {
-      component: CNavItem,
-      name: 'Enquiry',
-      to: '/contactUs',
-      icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
-    },
+    // {
+    //   component: CNavItem,
+    //   name: 'Enquiry',
+    //   to: '/contactUs',
+    //   icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
+    // },
 
     {
       component: CNavItem,
-      name: ' Show Enquiry',
+      name: 'Show Contact Us ',
       to: '/showContactUs',
       icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
     },
