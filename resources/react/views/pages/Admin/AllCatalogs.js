@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { MantineProvider, Container, Table, Text, Stack } from '@mantine/core';
 import { getAPICall } from '../../../util/api'; // Make sure this function is correctly imported
 
-function All_Reports() {
+function AllCatalogs() {
   const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   // Function to fetch data
   const fetchData = async () => {
     try {
-      const response = await getAPICall('/api/inquiry'); // Update endpoint as needed
+      const response = await getAPICall('/api/allCatalogs'); // Update endpoint as needed
       if (response) {
         setData(response);
         setErrorMessage('');
@@ -30,30 +30,26 @@ function All_Reports() {
     <MantineProvider withGlobalStyles withNormalizeCSS>
       <Container>
         <Stack spacing="lg">
-          <Text size="xl" weight={500}>Enquiry Report</Text>
+          <Text size="xl" weight={500}>All Catalogs</Text>
           {errorMessage && <Text color="red">{errorMessage}</Text>}
           <Table>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Contact Number</th>
-                <th>Message</th>
-                {/* <th>Created At</th>
-                <th>Updated At</th> */}
+                <th>Catalog Name</th>
+                <th>Description</th>
+                <th>Image Address</th>
               </tr>
             </thead>
             <tbody>
+
               {data.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
-                  <td>{item.name}</td>
-                  <td>{item.email}</td>
-                  <td>{item.contact_number}</td>
-                  <td>{item.message}</td>
-                  {/* <td>{item.created_at}</td>
-                  <td>{item.updated_at}</td> */}
+                  <td>{item.catalog_name}</td>
+                  <td>{item.catalog_desc}</td>
+                  <td>{item.img_address}</td>
+                
                 </tr>
               ))}
             </tbody>
@@ -64,4 +60,4 @@ function All_Reports() {
   );
 }
 
-export default All_Reports;
+export default AllCatalogs;

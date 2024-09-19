@@ -10,7 +10,7 @@ class Inquiry extends Model
     use HasFactory;
 
     // Define the table associated with the model
-    protected $table = 'inquiry';
+    protected $table = 'multi_enquiry';
 
     // Specify the attributes that are mass assignable
     protected $fillable = [
@@ -18,6 +18,10 @@ class Inquiry extends Model
         'email',
         'contact_number',
         'message',
+        'type',
+        'status',
+        
+        'updated_by'
     ];
 
     // Optionally, if you want to disable timestamps

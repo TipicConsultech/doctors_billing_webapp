@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { getUserType } from './util/session';
+import { Route, Routes } from 'react-router-dom';
+// import EnquiryStatus from './views/pages/contactUs/EnquiryStatus';
 
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
+
+
+// const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
 
 // New Register
 const NewUsers = React.lazy(() => import('./views/pages/register/NewUsers'));
@@ -14,10 +18,22 @@ const Credit = React.lazy(() => import('./views/pages/invoice/Credit'));
 const InvoiceDetails = React.lazy(() => import('./views/pages/invoice/InvoiceDetails'));
 const InvoiceCustomization = React.lazy(() => import('./views/pages/invoice/InvoiceCustomization'));
 
-// Contact Us
-const ContactUs = React.lazy(() => import('./views/pages/contactUs/ContactUs'));
-const ShowContactUs = React.lazy(() => import('./views/pages/show/Show'));
-const Inquiry = React.lazy(() => import('./views/pages/inquiry/Inquiry'));
+// Tiva Rewire Admin Panel
+// const EnquiryStatus = React.lazy(() => import('./views/pages/contactUs/EnquiryStatus'));
+const EnquiryStatus = React.lazy(() => import('./views/pages/contactUs/EnquiryStatus'));
+
+
+const SparePartEnquiry = React.lazy(() => import('./views/pages/SparePartEnquiry/SparePartEnquiry'));
+const ScrapEnquiry = React.lazy(() => import('./views/pages/ScrapEnquiry/ScrapEnquiry'));
+const Catalog = React.lazy(() => import('./views/pages/Admin/Catalog'));
+const allCatalog = React.lazy(() => import('./views/pages/Admin/AllCatalogs'));
+
+//
+const ContactUs = React.lazy(() => import('./views/pages/multiForms/ContactUs'));
+const BuySparePart = React.lazy(() => import('./views/pages/multiForms/BuySparePart'));
+const SellSparePart = React.lazy(() => import('./views/pages/multiForms/SellSparePart'));
+
+
 
 
 // Products
@@ -52,23 +68,41 @@ export default function fetchRoutes() {
   const user = getUserType();
   let routes = [];
 
+
+//   <Routes>
+//   <Route path="/status/:id" element={<EnquiryStatus/>} />
+// </Routes>
+
   if (user === 0) {
     routes = [
-      { path: '/', exact: true, name: 'Home', element: Dashboard },
-      { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-      { path: '/invoice', name: 'Invoice', element: Invoice },
-      { path: '/invoiceCustomization', name: 'Invoice Customization', element: InvoiceCustomization },
-      
+      { path: '/', exact: true, name: 'Home', element: ContactUs },
       { path: '/contactUs', name: 'ContactUs', element: ContactUs },
-      { path: '/showContactUs', name: 'ShowContactUs', element: ShowContactUs },
-      { path: '/inquiry', name: 'Inquiry', element: Inquiry },
+      { path: '/buySparePart', name: 'Buy', element: BuySparePart },
+      { path: '/sellSparePart', name: 'Sell', element: SellSparePart },
+
+      
+
+      { path: '/sparePartEnquiry', name: 'Spare Parts Enquiry', element: SparePartEnquiry },
+      { path: '/scrapVehicleEnquiry', name: 'Scrap Vehicle Enquiry', element: ScrapEnquiry },
+      // { path: '/inquiry', name: 'Inquiry', element: Inquiry },
+      { path: '/createCatalog', name: 'New Catalog Form', element: Catalog },
+      { path: '/allCatalog', name: 'ALL Catalog ', element: allCatalog },
+      // { path: '/status/:id', name: 'Status', component: <EnquiryStatus/> },
+      // { path: '/status', name: 'Status', component: EnquiryStatus, exact: true },
+      // { path: '/status/:id', name: 'Status', element: 
+      //   <Suspense fallback={<div>Loading...</div>}>
+      //     <EnquiryStatus />
+      //   </Suspense> 
+      // },
+
+      {  path:'/status/:id',name : "Status", element: EnquiryStatus  },
 
 
 
 
+      
 
-
-
+    
       { path: '/invoice-details/:id', name: 'InvoiceDetails', element: InvoiceDetails },
       { path: '/bookings', name: 'Advance Bookings', element: Orders },
       { path: '/regular', name: 'Regular Orders', element: Orders },
@@ -116,6 +150,6 @@ export default function fetchRoutes() {
       { path: '/updatepassword', name: 'Update Password', element: UpdatePassword },
     ];
   }
-
+  
   return routes;
 }

@@ -11,13 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inquiry', function (Blueprint $table) {
-            $table->id(); // Auto-incremental ID
-            $table->string('name'); // Name column
-            $table->string('email'); // Email column
-            $table->string('contact_number'); // Contact number column
-            $table->text('message'); // Message column
-            $table->timestamps(); // Created at and updated at timestamps
+        Schema::create('scrap_enquiry', function (Blueprint $table) {
+            $table->id(); // Primary key
+            $table->string('first_name'); // First name
+            $table->string('last_name'); // Last name
+            $table->string('email'); // Email
+            $table->string('mobile'); // Mobile number
+            $table->string('location'); // Location
+            $table->string('vehicle_category'); // Vehicle category
+            $table->string('vehicle_registration_number'); // Vehicle registration number
+            $table->string('vehicle_description')->nullable(); // Vehicle Description
+            $table->string('vehicle_manufacturer'); // Vehicle Brand
+            $table->string('registration_source'); // eg. Dealer/ Owner/RTO
+            $table->string('scrap_purpose'); // eg. Accidental/Expiry
+            $table->string('status')->nullable(); // status of Enquiry
+            $table->string('updated_by')->nullable(); // 
+            $table->timestamps(); // Created at and updated at
         });
     }
 

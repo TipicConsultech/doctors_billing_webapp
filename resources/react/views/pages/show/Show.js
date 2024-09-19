@@ -10,7 +10,7 @@ export default function ShowContactUs() {
     // Function to fetch data from API
     const fetchContactData = async () => {
       try {
-        const response = await fetch('/api/viewcontact'); // Replace with your API endpoint
+        const response = await fetch('/api/viewContact'); // Replace with your API endpoint
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

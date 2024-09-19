@@ -9,6 +9,42 @@ export async function register(data) {
   return await postOrPutData(host + '/api/register', data)
 }
 
+
+export async function postFormData(url = '', data ) {
+  try {
+    const token = getToken()
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        // 'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: data,
+    })
+
+    if (!response.ok) {
+      if (response.status === 401 && !url.includes('/login')) {
+        // handle unauthorized
+        deleteUserData()
+        window.location.replace('/')
+      }
+      if (response.status === 422) {
+        const error = await response.json()
+        if (error.message) {
+          throw new Error(error.message)
+        }
+      }
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error('Error posting data:', error)
+    throw error
+  }
+}
+
 /**
  * Posts data to a URL and returns the response as JSON.
  *

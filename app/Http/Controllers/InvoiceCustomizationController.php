@@ -8,24 +8,7 @@ use App\Models\CompanyInfo;
 
 class InvoiceCustomizationController extends Controller
 {  
-    // public function get(Request $request)
-    // {
-    //     $companyId = $request->query('company_id');
     
-    //     // Retrieve the company information by the provided company_id
-    //     $data = CompanyInfo::where('company_id', $companyId)->first();
-    
-    //     if ($data) {
-    //         return response()->json([
-    //             'message' => 'Company info retrieved successfully',
-    //             'data' => $data
-    //         ], 200);
-    //     } else {
-    //         return response()->json([
-    //             'message' => 'Company info not found'
-    //         ], 404);
-    //     }
-    // }
     
 
 
@@ -44,21 +27,6 @@ class InvoiceCustomizationController extends Controller
             'sign' => 'string',
         ]);
 
-        // $logoPath = $request->file('logo')->store('logos', 'public');
-        // $signPath = $request->file('sign')->store('signs', 'public');
-
-        // CompanyInfo::create([
-        //     'land_mark' => $request->land_mark,
-        //     'Tal' => $request->Tal,
-        //     'Dist' => $request->Dist,
-        //     'Pincode' => $request->Pincode,
-        //     'phone_no' => $request->phone_no,
-        //     'bank_name' => $request->bank_name,
-        //     'account_no' => $request->account_no,
-        //     'IFSC' => $request->IFSC,
-        //     'logo' => $logoPath,
-        //     'sign' => $signPath,
-        // ]);
 
         $CompanyInfo = new CompanyInfo;
         $CompanyInfo->company_name = "Samarth Nursary 2";
@@ -78,7 +46,6 @@ class InvoiceCustomizationController extends Controller
         
         $CompanyInfo->save();
         
-        // ]);
 
 
         return response()->json(['message' => 'Company info saved successfully'], 200);
