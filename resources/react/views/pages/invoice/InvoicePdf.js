@@ -1,7 +1,7 @@
 import React from 'react';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import Logo from "./Images/Logo.png";
+// import Logo from "./Images/Logo.png";
 import SignatureImage from "./Images/E-SIGNATURE.png";
 
 export function generatePDF(grandTotal, invoiceNo, customerName, formData,remainingAmount,totalAmountWords) {
@@ -60,11 +60,11 @@ export function generatePDF(grandTotal, invoiceNo, customerName, formData,remain
     pdf.setDrawColor("#333");
     pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), "S");
 
-    const img = new Image();
-    img.src = Logo;
-    pdf.addImage(img, "PNG", 15, 10, 40, 40);
-    pdf.setFontSize(15);
-    pdf.setTextColor("#000");
+    // const img = new Image();
+    // img.src = Logo;
+    // pdf.addImage(img, "PNG", 15, 10, 40, 40);
+    // pdf.setFontSize(15);
+    // pdf.setTextColor("#000");
 
     const status = formData.status;
     const INVOICE = formData.InvoiceStatus;

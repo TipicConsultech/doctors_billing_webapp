@@ -31,9 +31,9 @@ function ContactUS() {
   const getStatusText = (status) => {
     switch (status) {
       case '0':
-        return 'Enquiry';
+        return 'Enquiry Received';
       case '1':
-        return 'Pending';
+        return 'Pending/In progress';
       case '2':
         return 'Completed';
       case '3':
@@ -45,12 +45,6 @@ function ContactUS() {
 
   // Define columns for MantineReactTable
   const columns = [
-    
-    // { accessorKey: 'id', header: 'ID' },
-    { accessorKey: 'name', header: 'Name', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
-    { accessorKey: 'email', header: 'Email', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
-    { accessorKey: 'contact_number', header: 'Contact Number', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
-    { accessorKey: 'message', header: 'Message', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
     {
       accessorKey: 'status',
       header: 'Status',
@@ -59,6 +53,13 @@ function ContactUS() {
         return <Text>{getStatusText(status)}</Text>;
       },
     },
+    
+    // { accessorKey: 'id', header: 'ID' },
+    { accessorKey: 'name', header: 'Name', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'email', header: 'Email', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'contact_number', header: 'Contact Number', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'message', header: 'Message', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    
     {
       accessorKey: 'status',
       header: 'Action',

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ContactUs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 
 
 class ContactUsController extends Controller
@@ -19,6 +21,19 @@ class ContactUsController extends Controller
         // Return the data as a JSON response
         return response()->json($ScrapVehicleData);
     }
+
+    public function getEnquiryById($id)
+    {
+        // Find the enquiry by ID
+        $enquiry = ContactUs::find($id);
+
+        // If the enquiry is found, return it, otherwise return a 404 response
+        if ($enquiry) {
+            return response()->json(['Enquiry' => $enquiry] , 200);
+        } else {
+            return response()->json(['message' => 'Enquiry not found'], 404);
+        }
+    }
     
     /**
      * Store the form input in the database.
@@ -30,14 +45,12 @@ class ContactUsController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
-            'mobile' => 'required|string|max:20',
+            'mobile' => 'required|string|max:10',
             'location' => 'required|string|max:255',
             'vehicle_category' => 'required|string',
             'vehicle_manufacturer'=>'required|string',
             'vehicle_registration_number' => 'required|string|max:255',
-
             "vehicle_description" => 'required|string|max:255',
-            "vehicle_manufacturer"=> 'required|string|max:255',
             "registration_source" => 'required|string|max:255',
             "scrap_purpose"=> 'required|string|max:255',
         ]);
@@ -54,10 +67,8 @@ class ContactUsController extends Controller
             'vehicle_manufacturer' => $request->input('vehicle_manufacturer'),
             'vehicle_registration_number' => $request->input('vehicle_registration_number'),
             'vehicle_description' => $request->input('vehicle_description'),
-            'vehicle_manufacturer' => $request->input('vehicle_manufacturer'),
             'registration_source' => $request->input('registration_source'),
             'scrap_purpose' => $request->input('scrap_purpose'),
-
             'status'=>$status
         ]);
 
@@ -65,25 +76,6 @@ class ContactUsController extends Controller
         return response()->json(['message' => 'Contact information saved successfully'], 200);
     }
 
-
-    public function getEnquiryById($id)
-{
-    try {
-        // Find the Inquiry by ID
-        $ContactUs = ContactUs::find($id);
-
-        // Check if inquiry exists
-        if (!$ContactUs) {
-            return response()->json(['error' => 'Enquiry not found'], 404);
-        }
-
-        // Return the inquiry data as a responses
-        return response()->json(['Enquiry'=>$ContactUs], 200);
-    } catch (\Exception $e) {
-        // Handle any exceptions that occur
-        return response()->json(['error' => 'Failed to retrieve inquiry', 'details' => $e->getMessage()], 500);
-    }
-}
 
 
 
@@ -116,7 +108,74 @@ class ContactUsController extends Controller
         } else {
             return response()->json(['message' => 'Record not found.'], 404);
         }
+    } 
+
+    public function allScrapEnquriesInMonth($month)
+{
+    // If the month is a single number, assume the current year
+    if (is_numeric($month)) {
+        $month = now()->format('Y') . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
     }
+
+    // Parse the month to get the start and end dates
+    $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+    $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+    // Count the number of 'buy' enquiries (type = 1, status = 0)
+    $new = ContactUs::where('status',"0")
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->count();
+
+    // Count the number of 'sell' enquiries (type = 2, status = 0)
+    $pending = ContactUs::where('status',"1")
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->count();
+
+    $completed = ContactUs::where('status',"2")
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->count();
+
+    // Return the totals as a JSON response
+    return response()->json([
+        'new' => $new,
+        'pending' => $pending,
+        'completed' => $completed
+
+    ]);
+}
+
+public function allScrapEnquriesByStatus($status,$month)
+{
+    // If the month is a single number, assume the current year
+    if (is_numeric($month)) {
+        $month = now()->format('Y') . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
+    }
+
+    // Parse the month to get the start and end dates
+    $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+    $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+    // Count the number of 'buy' enquiries (type = 1, status = 0)
+    $data = ContactUs::where('status',$status)
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->get();
+        //->count();
+
+    // Count the number of 'sell' enquiries (type = 2, status = 0)
+    // $pending = ContactUs::where('status',"1")
+    //     ->whereBetween('created_at', [$startDate, $endDate])
+    //     ->count();
+
+    // $completed = ContactUs::where('status',"2")
+    //     ->whereBetween('created_at', [$startDate, $endDate])
+    //     ->count();
+
+    // Return the totals as a JSON response
+    return response()->json(
+     $data
+    );
+}
+
 }
 
 

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->nullable();
             $table->string('mobile')->unique();
+            $table->string('registration_number');
+            $table->string('speciality');
+            $table->string('education');
             $table->string('profilepic')->nullable();
             $table->integer('type')->default(0);
             $table->boolean('blocked')->default(false);

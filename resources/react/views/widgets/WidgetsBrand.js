@@ -6,49 +6,38 @@ import { cilCalendar } from '@coreui/icons';
 import { getAPICall } from '../../util/api';
 
 const WidgetsBrand = (props) => {
-  const [todaysDeliveries, setTodaysDeliveries] = useState(0); // State to store today's deliveries count
-  const [tomorrowsDeliveries, setTomorrowsDeliveries] = useState(0); // State to store tomorrow's deliveries count
+  const [data, setData] = useState({ total_buy: 0, total_sell: 0 });
+ 
+  const currentMonth = new Date().getMonth() + 1;
 
   useEffect(() => {
-    TodaysDeliveries(); // Fetch deliveries on component mount
-    TomorrowsDeliveries();
-  }, []);
+    // Function to fetch enquiries based on the current month (as number)
+    const fetchEnquiries = async () => {
+        try {
+            // Make the API request with only the month number (e.g., 9 for September)
+            const response = await getAPICall(`/api/allEnquiries/${currentMonth}`);
+            setData(response);  // Update the data state with the response
+        } catch (error) {
+            alert(error.message);
+        } 
+    };
 
-  const TodaysDeliveries = async () => {
-    try {
-      const today = new Date();
-      const fulldate = today.toISOString().split('T')[0];
-      const resp = await getAPICall(`/api/totalDeliveries?startDate=${fulldate}&endDate=${fulldate}`);
-      const todaysCount = resp.length;
-      
-      setTodaysDeliveries(todaysCount); // Update state with today's deliveries count
-    } catch (error) {
-      console.error('Error fetching deliveries:', error);
-    }
-  };
+    // Call the function when the component mounts or when the month changes
+    fetchEnquiries();
+}, []);
 
-  const TomorrowsDeliveries = async () => {
-    try {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const fulldate = tomorrow.toISOString().split('T')[0];
-      const resp = await getAPICall(`/api/totalDeliveries?startDate=${fulldate}&endDate=${fulldate}`);
-      const tomorrowsCount = resp.length;
-      setTomorrowsDeliveries(tomorrowsCount); // Update state with tomorrow's deliveries count
-    } catch (error) {
-      console.error('Error fetching deliveries:', error);
-    }
-  };
+  
+ 
 
   return (
     <CRow className={props.className} xs={{ gutter: 4 }}>
       <CCol sm={12} xl={12} xxl={12}>
         <CWidgetStatsD
           color="warning"
-          icon={<div className="d-flex align-items-center"><CIcon icon={cilCalendar} height={40} className="pr-4 text-white align-items-center " /><span className="text-white display-6 mr-2">&nbsp;Schedule Delivery</span></div>}
+          icon={<div className="d-flex align-items-center"><CIcon icon={cilCalendar} height={40} className="pr-4 text-white align-items-center " /><span className="text-white display-6 mr-2">&nbsp;Total Enquiry</span></div>}
           values={[
-            { title: 'Today', value: todaysDeliveries }, // Display today's deliveries count here
-            { title: 'Tomorrow', value: tomorrowsDeliveries }, // Display tomorrow's deliveries count
+            { title: 'Want to BUY', value: data.total_buy }, // Display today's deliveries count here
+            { title: 'Want to SELL', value: data.total_sell }, // Display tomorrow's deliveries count
           ]}
         />
       </CCol>

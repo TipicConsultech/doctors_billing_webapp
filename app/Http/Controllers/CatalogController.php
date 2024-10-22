@@ -44,7 +44,8 @@ class CatalogController extends Controller
      
         'catalog_name'=>'required|string|max:255',
         'catalog_desc'=>'required|string|max:255',
-        'img_address'=>'string',
+        'img_address'=>'required|string',
+        'qty'=>'required|integer'
       
         ]);
 
@@ -53,6 +54,8 @@ class CatalogController extends Controller
         $Catalog->catalog_name = $request->input('catalog_name');
         $Catalog->catalog_desc= $request->input('catalog_desc');
         $Catalog->img_address = $request->input('img_address');
+        $Catalog->qty = $request->input('qty');
+
         $Catalog->save();
         
 

@@ -16,19 +16,25 @@ function InvoiceCustomization() {
   const [formData, setFormData] = useState({
     catalog_name: '',
     catalog_desc: '',
-    img_address: ''
+    img_address: '',
+    qty:0
   });
 
   const ImageInputRef = useRef(null);
 
   const handleChange = (event) => {
     const { name, value, files } = event.target;
+  
     if (files && files.length > 0) {
       setFormData({ ...formData, [name]: files[0] }); // Store the file as a file object
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData({
+        ...formData,
+        [name]: name === 'qty' ? parseInt(value) || 0 : value, // Convert qty to integer
+      });
     }
   };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,6 +54,7 @@ function InvoiceCustomization() {
         catalog_name: formData.catalog_name,
         catalog_desc: formData.catalog_desc,
         img_address: imageAddress,
+        qty: formData.qty
       };
 
       if (finalData.img_address) {
@@ -58,7 +65,8 @@ function InvoiceCustomization() {
       setFormData({
         catalog_name: '',
         catalog_desc: '',
-        img_address: ''
+        img_address: '',
+        qty:0
       });
 
       if (ImageInputRef.current) {
@@ -107,6 +115,19 @@ function InvoiceCustomization() {
               </div>
 
               <div className='row'>
+              <div className='col-sm-4'>
+                  <div className='mb-3'>
+                    <CFormLabel htmlFor="qty">Quantity</CFormLabel>
+                    <CFormInput
+                      type='number'
+                      name='qty'
+                      id='qty'
+                      value={formData.qty}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
                 <div className='col-sm-4'>
                   <div className='mb-3'>
                     <CFormLabel htmlFor="img_address">Catalog Image (PNG, max 2MB)</CFormLabel>

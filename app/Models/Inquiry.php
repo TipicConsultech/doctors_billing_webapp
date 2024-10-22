@@ -20,7 +20,6 @@ class Inquiry extends Model
         'message',
         'type',
         'status',
-        
         'updated_by'
     ];
 

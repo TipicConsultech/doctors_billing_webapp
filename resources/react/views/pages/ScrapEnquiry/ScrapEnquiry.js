@@ -301,9 +301,9 @@ function ScrapEnquiry() {
   const getStatusText = (status) => {
     switch (status) {
       case '0':
-        return 'Enquiry';
+        return 'Enquiry Received';
       case '1':
-        return 'Pending';
+        return 'Pending/In progress';
       case '2':
         return 'Completed';
       case '3':
@@ -317,6 +317,14 @@ function ScrapEnquiry() {
   const columns = [
    
     // { accessorKey: 'id', header: 'ID' },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      Cell: ({ cell }) => {
+        const status = cell.getValue();
+        return <Text>{getStatusText(status)}</Text>;
+      },
+    },
     { accessorKey: 'first_name', header: 'Name', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
     { accessorKey: 'last_name', header: 'Surname', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
     { accessorKey: 'email', header: 'Email', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
@@ -329,14 +337,7 @@ function ScrapEnquiry() {
     { accessorKey: 'scrap_purpose', header: 'Purpose of Scrap', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
     { accessorKey: 'vehicle_description', header: 'Description', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
 
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      Cell: ({ cell }) => {
-        const status = cell.getValue();
-        return <Text>{getStatusText(status)}</Text>;
-      },
-    },
+    
     {
       accessorKey: 'status',
       header: 'Action ',

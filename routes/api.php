@@ -18,15 +18,16 @@ use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\InquiryController;
 use App\Models\Inquiry;
 use App\Http\Controllers\CatalogController;
-use App\Http\Controllers\AdminController; 
+// use App\Http\Controllers\AdminController; 
 use App\Http\Controllers\CsvUploadController;
 
+use App\Http\Controllers\BillController;
 
 
 
 // Public APIs
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'registers']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/mobileLogin', [AuthController::class, 'mobileLogin']);
 Route::post('/scrapVehicle', [ContactUsController::class, 'store']);
 // Route::post('/contactUs', [InquiryController::class, 'saveContact']);
@@ -63,12 +64,24 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::put('/multiEnquiryStausUpdate/{id}', [InquiryController::class, 'updateStatus']);
 
 
+    Route::get('/enquiries/{type}/{status}', [InquiryController::class, 'findByTypeAndStatus']);
+    Route::get('/allEnquiries/{month}', [InquiryController::class, 'allEnquriesInMonth']);
+    Route::get('/allScrapEnquriesInMonth/{month}', [ContactUsController::class, 'allScrapEnquriesInMonth']);
+    Route::get('/allScrapEnquriesByStatus/{status}/{month}', [ContactUsController::class, 'allScrapEnquriesByStatus']);
 
+    Route::post('/bills', [BillController::class, 'store']);
+    Route::get('/bill/{id} ', [BillController::class, 'index']);
+
+Route::get('/users/{id}', [AuthController::class, 'show']);
+
+
+    
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']); // Correctly specify the controller method
     Route::get('/monthlyReport', [OrderController::class, 'getMonthlyReport']);
+
     
 });
 
@@ -80,3 +93,69 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
    
+
+
+
+
+// use App\Http\Controllers\Api\PatientController;
+
+use App\Http\Controllers\PatientController;
+
+Route::get('/patients', [PatientController::class, 'index']);
+Route::post('/patients', [PatientController::class, 'store']);
+Route::get('/patients/{patient}', [PatientController::class, 'show']);
+Route::put('/patients/{patient}', [PatientController::class, 'update']);
+Route::delete('/patients/{patient}', [PatientController::class, 'destroy']);
+
+use App\Http\Controllers\Api\PatientsController;
+
+Route::get('/patients/suggestions', [PatientsController::class, 'getSuggestions']);
+
+
+
+
+
+
+use App\Http\Controllers\Api\DoctorController;
+
+
+Route::get('/doctor/{id}', [DoctorController::class, 'getDoctorById']);
+// use App\Http\Controllers\Api\AuthController;
+
+// use Illuminate\Support\Facades\Route;
+
+// Define public routes for doctor registration and login
+// Route::post('doctors/register', [DoctorController::class, 'register']);
+// Route::post('doctors/login', [DoctorController::class, 'login']);
+// Route::post('doctors/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+// use App\Http\Controllers\AuthController;
+
+// use App\Http\Controllers\AuthController; 
+// Route::post('doctors/register', [AuthController::class, 'register']);
+// Route::post('doctors/login', [AuthController::class, 'login']);
+// Route::post('doctors/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+
+// use App\Http\Controllers\Api\AdminAuthController;
+
+// Route::post('/doctors/register', [AdminAuthController::class, 'register']);
+// Route::post('/doctors/login', [AdminAuthController::class, 'login']);
+
+
+use App\Http\Controllers\DescriptionController;
+
+// Route to create a new description
+Route::post('/descriptions', [DescriptionController::class, 'store']);
+
+// Route to get all descriptions
+// Route::get('/descriptions', [DescriptionController::class, 'index']);
+Route::get('/descriptions/{bill_id}', [DescriptionController::class, 'getDescriptionsByBillId']);
+
+
+
+
+
+// routes/api.php
+Route::get('/bill-with-doctor/{id}', [BillController::class, 'getBillWithDoctor']);
+

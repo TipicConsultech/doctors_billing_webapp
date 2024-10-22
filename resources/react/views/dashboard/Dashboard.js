@@ -57,10 +57,14 @@ import { getAPICall, put } from '../../util/api'
 import ConfirmationModal from '../common/ConfirmationModal'
 import { useNavigate } from 'react-router-dom'
 import { getUserType } from '../../util/session'
+import { MantineReactTable, useMantineReactTable } from 'mantine-react-table'
+import { Button, Card, Text, Title } from '@mantine/core'
+//import { Button } from '@coreui/coreui'
+
 
 const Dashboard = (Props) => {
   const user=getUserType();
-
+  const [scrapData, setScrapData] = useState({});
   const navigate = useNavigate()
   const [orders, setOrders] = useState([])
   const [deleteProduct, setDeleteProduct] = useState()
@@ -79,64 +83,100 @@ const Dashboard = (Props) => {
     monthlyPandL: Array(12).fill(0)
 
   });
-
+  const [currentDiv, setCurrentDiv] = useState(0);
+  //console.log(currentDiv);
+  const currentMonth = new Date().getMonth()+1;
 
 
   useEffect(() => {
-    const fetchMonthlySales = async () => {
+    const fetchScarpData = async () => {
      
-        const response = await getAPICall('/api/monthlyReport');
-        
-        setReportMonth(
-          response);
+      try {
+        const response = await getAPICall(`/api/allScrapEnquriesByStatus/${currentDiv}/${currentMonth}`);
+        setScrapData(response); // Assuming response contains a data field
+        console.log(scrapData);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
        
     };
 
-    fetchMonthlySales();
-  }, []);
+    fetchScarpData();
+  }, [currentDiv]);
 
 
-  const fetchOrders = async () => {
-    const resp = await getAPICall(`/api/totalDeliveries?startDate=${fulldate}&endDate=${Tomorrow}`);
-    setOrders(resp)
+  
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case '0':
+        return 'Enquiry';
+      case '1':
+        return 'Pending';
+      case '2':
+        return 'Completed';
+      case '3':
+        return 'Cancelled';
+      default:
+        return 'Unknown';
+    }
+  };
+  
+ 
+  const handleViewClick = (row) => {
+    navigate(`/status/${row.original.id}`, { state: { id: row.original.id, type: 1 } });
+  };
+  // Define columns for MantineReactTable
+  const columns = [
    
-  }
-  useEffect(() => {
-    fetchOrders()
-  }, [route, currentPage])
+    // { accessorKey: 'id', header: 'ID' },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      Cell: ({ cell }) => {
+        const status = cell.getValue();
+        return <Text>{getStatusText(status)}</Text>;
+      },
+    },
+    
+    { accessorKey: 'first_name', header: 'Name', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'last_name', header: 'Surname', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'email', header: 'Email', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'mobile', header: 'Contact Number', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'location', header: 'Address', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'vehicle_registration_number', header: 'Registration Number', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'registration_source', header: 'Source of Reg.', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'vehicle_category', header: 'Category', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'vehicle_manufacturer', header: 'Manufacturer', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'scrap_purpose', header: 'Purpose of Scrap', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
+    { accessorKey: 'vehicle_description', header: 'Description', Cell: ({ cell }) => <Text>{cell.getValue()}</Text> },
 
+    
+    {
+      accessorKey: 'status',
+      header: 'Action ',
+      Cell: ({ row }) => (
+        <Button onClick={() => handleViewClick(row)}>View</Button>
+      ),
+    },
+  ];
 
-  const handleDelete = (p) => {
-    setDeleteProduct(p)
-    setDeleteModalVisible(true)
-  }
-
-  const onDelete = async () => {
-    await put('/api/order/' + deleteProduct.id, { ...deleteProduct, orderStatus: 0 })
-    setDeleteModalVisible(false)
-    fetchOrders()
-  }
-
-  const handleEdit = async (order) => {
-    await put('/api/order/' + order.id, { ...order, orderStatus: 1 })
-    fetchOrders()
-  }
-
-  const handleShow = async (order) => {
-    navigate('/invoice-details/' + order.id)
-  }
+  const table = useMantineReactTable({
+    columns,
+    data: scrapData ?? [],
+    enableFullScreenToggle: false, // Disable full-screen mode
+  });
 
   return (
     <>
-      <WidgetsDropdown className="mb-4" reportMonth={reportMonth} />
+      <WidgetsDropdown className="mb-4" reportMonth={reportMonth} setCurrentDiv={setCurrentDiv}  />
       <CCol sm={12} xl={12} xxl={12}>
-      <div className='d-flex justify-content-center'> 
+      <div className='d-flex justify-content-center '> 
         <WidgetsBrand className='d-flex justify-content-center' />
       </div>
-
       </CCol>
      
-      <CRow className='mt-4'>
+      {/* <CRow className='mt-4'>
       <ConfirmationModal
         visible={deleteModalVisible}
         setVisible={setDeleteModalVisible}
@@ -148,66 +188,11 @@ const Dashboard = (Props) => {
           <CCardHeader>
             <strong>Orders</strong>
           </CCardHeader>
-          <CCardBody>
-            <div className='table-responsive'>
-            <CTable >
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">ID</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Mobile</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Balance</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Amount Paid</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Total Amount</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">delivery Date</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              {
-                orders===null?(<h1>No pending Orders</h1>):(<CTableBody>
-                  {orders.map((order, index) => {
-                    return (
-                      
-                      <CTableRow key={order.id}>
-                        <CTableHeaderCell scope="row">{index + 1}</CTableHeaderCell>
-                        <CTableDataCell>{order.customerName}</CTableDataCell>
-                        <CTableDataCell>{order.customerMobile}</CTableDataCell>
-                        <CTableDataCell>{order.finalAmount - order.paidAmount}</CTableDataCell>
-                        <CTableDataCell>{order.paidAmount}</CTableDataCell>
-                        <CTableDataCell>{order.finalAmount}</CTableDataCell>
-                        <CTableDataCell>{order.deliveryDate}</CTableDataCell>
-                    
-                        <CTableDataCell>
-                          <CBadge
-                            color="success"
-                            onClick={() => {
-                              handleShow(order)
-                            }}
-                            role="button"
-                          >
-                            Show
-                          </CBadge>{' '}
-                          {order.orderStatus == 2 && (
-                            <CBadge
-                              color="info"
-                              onClick={() => {
-                                handleEdit(order)
-                              }}
-                              role="button"
-                            >
-                              Mark Delivered
-                            </CBadge>
-                          )}{' '}
-                        </CTableDataCell>
-                      </CTableRow>
-                    )
-                  })}
-                </CTableBody>)
-
-              }
-              
-            </CTable>
-            </div>
+          <CCardBody> */}
+            <Card shadow="sm" padding="lg">
+      {/* <Title order={3}>Scrap Enquiries </Title> */}
+      <MantineReactTable table={table} />
+    </Card>
             {/* <CPagination aria-label="Page navigation example">
               <CPaginationItem
                 onClick={() =>
@@ -235,42 +220,11 @@ const Dashboard = (Props) => {
                 Next
               </CPaginationItem>
             </CPagination> */}
-          </CCardBody>
+          {/* </CCardBody>
         </CCard>
       </CCol>
-    </CRow>
+    </CRow> */}
 
-    {user===0?(
-      <CCard className="mt-4 mb-4">
-        <CCardBody>
-          <CRow>
-            <CCol sm={5}>
-              <h4 id="traffic" className="card-title mb-0">
-                P&L(In Thousands)
-              </h4>
-              <div className="small text-body-secondary">January - December</div>
-            </CCol>
-            <CCol sm={7} className="d-none d-md-block">
-              {/* <CButton color="primary" className="float-end">
-                <CIcon icon={cilCloudDownload} />
-              </CButton> */}
-              {/*<CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
-                  <CButton
-                    color="outline-secondary"
-                    key={value}
-                    className="mx-0"
-                    active={value === 'Month'}
-                  >
-                    {value}
-                  </CButton>
-                 ))}
-               </CButtonGroup> */}
-            </CCol>
-          </CRow>
-          <MainChart monthlyPandL={reportMonth.monthlyPandL}/>
-        </CCardBody>
-      </CCard> ):(<div></div>)}
     </>
   )
 

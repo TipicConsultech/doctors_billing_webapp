@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 
 
 
-// const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
+const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
 
 // New Register
 const NewUsers = React.lazy(() => import('./views/pages/register/NewUsers'));
@@ -76,6 +76,7 @@ export default function fetchRoutes() {
   if (user === 0) {
     routes = [
       { path: '/', exact: true, name: 'Home', element: ContactUs },
+      { path: '/dashboard', exact: true, name: 'Dashboard', element: Dashboard },
       { path: '/contactUs', name: 'ContactUs', element: ContactUs },
       { path: '/buySparePart', name: 'Buy', element: BuySparePart },
       { path: '/sellSparePart', name: 'Sell', element: SellSparePart },

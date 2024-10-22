@@ -33,17 +33,18 @@ export default function fetchNavItems(){
   _nav = [
     {
       component: CNavItem,
+      name: 'Dashboard',
+      to: '/dashboard',
+      icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
+    },
+
+    {
+      component: CNavItem,
       name: 'Scrap Vehicle Enquiry',
       to: '/scrapVehicleEnquiry',
       icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
     },
-    {
-      component: CNavItem,
-      name: 'test',
-      to: '/status/:id',
-      icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
-    },
-
+    
     {
       component: CNavItem,
       name: 'Buy Spare Parts ',
@@ -90,5 +91,62 @@ export default function fetchNavItems(){
     
 
   }
+
+  if(user===1){
+
+    _nav = [
+      {
+        component: CNavItem,
+        name: 'Scrap Vehicle Enquiry',
+        to: '/scrapVehicleEnquiry',
+        icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
+      },
+      
+      {
+        component: CNavItem,
+        name: 'Buy Spare Parts ',
+        to: '/buySparePart',
+        icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
+      },
+  
+      {
+        component: CNavItem,
+        name: 'Sell Spare Parts ',
+        to: '/sellSparePart',
+        icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
+      },
+  
+      {
+        component: CNavItem,
+        name: 'Contact Us ',
+        to: '/contactUs',
+        icon: <CIcon icon={cibElasticStack} customClassName="nav-icon" />,
+      },
+  
+  
+      {
+        component: CNavGroup,
+        name: 'Catalog',
+        icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+        items: [
+          {
+            component: CNavItem,
+            name: 'Create Catalog',
+            to: '/createCatalog',
+          },
+          {
+            component: CNavItem,
+            name: 'All Catalog',
+            to: '/allCatalog',
+          },
+         
+          
+        ],
+      },
+  
+      ]
+      
+  
+    }
 return _nav;
 }

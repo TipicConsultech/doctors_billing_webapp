@@ -5,40 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Inquiry;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class InquiryController extends Controller
 { 
 
-//     public function saveContact(Request $request)
-// {
-//     // Validate the incoming request data
-//     $validatedData = $request->validate([
-//         'name' => 'required|string|max:255',
-//         'email' => 'required|string|email|max:255',
-//         'mobile' => 'required|string|max:13',
-//         'queries' => 'required|string|max:255',
-//     ]);
- 
-//     try {
-//         // Create a new Inquiry instance and save the validated data
-//          // Define form_type here
-        
-//         Inquiry::create([
-//             'name' => $validatedData['name'],
-//             'email' => $validatedData['email'],
-//             'contact_number' => $validatedData['mobile'],
-//             'message' => $validatedData['queries'],
-//             'form_type' => 0,
-//         ]);
 
-//         // Return a success response
-//         return response()->json(['message' => 'Contact information saved successfully'], 200);
-//     } catch (\Exception $e) {
-//         // Handle any exceptions that occur
-//         return response()->json(['error' => 'Failed to save contact information', 'details' => $e->getMessage()], 500);
-//     }
-// }
 public function getEnquiryById($id)
 {
     try {
@@ -180,5 +153,47 @@ public function updateSparePart(Request $request, $id)
             return response()->json(['message' => 'Record not found.'], 404);
         }
     }
+
+
+    public function findByTypeAndStatus($type, $status)
+    {
+        // Fetch the enquiries matching the 'type' and 'status'
+        $enquiries = Inquiry::where('type', $type)
+            ->where('status', $status)
+            ->get();
+        // Return the data as a JSON response
+        return response()->json($enquiries);
+    }
+
+    public function allEnquriesInMonth($month)
+{
+    // If the month is a single number, assume the current year
+    if (is_numeric($month)) {
+        $month = now()->format('Y') . '-' . str_pad($month, 2, '0', STR_PAD_LEFT);
+    }
+
+    // Parse the month to get the start and end dates
+    $startDate = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+    $endDate = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+    // Count the number of 'buy' enquiries (type = 1, status = 0)
+    $totalBuy = Inquiry::where('type', "1")
+        ->where('status',"0")
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->count();
+
+    // Count the number of 'sell' enquiries (type = 2, status = 0)
+    $totalSell = Inquiry::where('type', "2")
+        ->where('status',"0")
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->count();
+
+    // Return the totals as a JSON response
+    return response()->json([
+        'total_buy' => $totalBuy,
+        'total_sell' => $totalSell
+    ]);
+}
+
 }
 
