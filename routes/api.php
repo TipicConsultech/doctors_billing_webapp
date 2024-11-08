@@ -22,6 +22,8 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CsvUploadController;
 
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\PatientController;
+
 
 
 
@@ -71,8 +73,13 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::post('/bills', [BillController::class, 'store']);
     Route::get('/bill/{id} ', [BillController::class, 'index']);
+    Route::get('/bills', [BillController::class, 'show']);
+
 
 Route::get('/users/{id}', [AuthController::class, 'show']);
+
+
+Route::get('/patients/search', [PatientController::class, 'searchPatientByName']);
 
 
     
@@ -99,17 +106,14 @@ Route::get('/user', function (Request $request) {
 
 // use App\Http\Controllers\Api\PatientController;
 
-use App\Http\Controllers\PatientController;
 
 Route::get('/patients', [PatientController::class, 'index']);
 Route::post('/patients', [PatientController::class, 'store']);
 Route::get('/patients/{patient}', [PatientController::class, 'show']);
 Route::put('/patients/{patient}', [PatientController::class, 'update']);
 Route::delete('/patients/{patient}', [PatientController::class, 'destroy']);
+Route::get('/patients/search', [PatientController::class, 'search']);
 
-use App\Http\Controllers\Api\PatientsController;
-
-Route::get('/patients/suggestions', [PatientsController::class, 'getSuggestions']);
 
 
 
@@ -159,3 +163,9 @@ Route::get('/descriptions/{bill_id}', [DescriptionController::class, 'getDescrip
 // routes/api.php
 Route::get('/bill-with-doctor/{id}', [BillController::class, 'getBillWithDoctor']);
 
+
+
+
+
+
+Route::middleware('auth:sanctum')->get('/bills/doctor', [BillController::class, 'getBillsByDoctorId']);

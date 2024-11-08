@@ -18,6 +18,7 @@ class Bill extends Model
         'doctor_name',
         'registration_number',
         'visit_date',
+        'grand_total',
     ];
 
     public function descriptions()

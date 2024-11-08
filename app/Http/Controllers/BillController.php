@@ -28,6 +28,7 @@ class BillController extends Controller
             'doctor_name' => 'string',
             'registration_number' => 'string',
             'visit_date' => 'required|date',
+            'grand_total' => 'required|string',
         ]);
 
         $doctorId = Auth::id();
@@ -44,6 +45,7 @@ class BillController extends Controller
             'doctor_name' => $request->doctor_name,
             'registration_number' => $request->registration_number,
             'visit_date' => $request->visit_date,
+            'grand_total' => $request->grand_total,
         ]);
 
         return response()->json([
@@ -141,6 +143,62 @@ public function getBillWithDoctor($id)
         return response()->json($bill);
     }
 
+    // public function getPatientsForLoggedInDoctor()
+    // {
+    //     // Get the authenticated user's ID (doctor's ID)
+    //     $doctorId = auth()->id();
+
+    //     // Retrieve all bills for the logged-in doctor
+    //     $patients = Bill::where('doctor_id', $doctorId)->get();
+
+    //     return response()->json($patients);
+    // }
+
+//     public function getPatientsByDoctorId($doctorId)
+// {
+//     \Log::info("Fetching patients for doctor ID: $doctorId");
+
+//     // Validate the doctorId
+//     if (!is_numeric($doctorId)) {
+//         return response()->json(['error' => 'Invalid doctor ID'], 400);
+//     }
+
+//     // Attempt to retrieve patients
+//     try {
+//         $patients = Bill::where('doctor_id', $doctorId)->get();
+//     } catch (\Exception $e) {
+//         \Log::error("Error fetching patients: " . $e->getMessage());
+//         return response()->json(['error' => 'An error occurred while fetching patients.'], 500);
+//     }
+
+//     if ($patients->isEmpty()) {
+//         return response()->json(['message' => 'No patients found for this doctor.'], 404);
+//     }
+
+//     return response()->json($patients);
+// }
     
     
+
+
+
+
+
+public function getBillsByDoctorId()
+{
+    // Validate the doctor ID (optional, but good practice)
+  
+   $id=Auth::user()->id;
+    // Fetch bills where doctor_id matches the provided doctorId
+    $bills = Bill::where('doctor_id', $id)->get();
+
+    // Check if bills were found
+    if ($bills->isEmpty()) {
+        return response()->json(['error' => 'No bills found for this doctor.'], 404);
+    }
+
+    return response()->json($bills); // Return bills as JSON
+}
+
+
 }

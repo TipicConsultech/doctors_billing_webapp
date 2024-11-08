@@ -140,7 +140,64 @@ class AuthController extends Controller
 
 
 
-    public function login(Request $request)
+//     public function login(Request $request)
+// {
+//     // Validate the incoming request data
+//     $fields = $request->validate([
+//         'email' => 'required|string|email', // Ensure it's a valid email format
+//         'password' => 'required|string'
+//     ]);
+
+//     // Check if email exists
+//     $user = User::where('email', $fields['email'])->first();
+
+//     // Log user existence check
+//     \Log::info('User existence check:', ['email' => $fields['email'], 'exists' => $user ? true : false]);
+
+//     // Check password
+//     if (!$user || !Hash::check($fields['password'], $user->password)) {
+//         \Log::info('Invalid credentials for user:', ['email' => $fields['email']]);
+//         return response()->json([
+//             'message' => 'Invalid credentials'
+//         ], 401); // Unauthorized
+//     }
+
+//     // Check if user is blocked
+//     if ($user->blocked) { // No need to compare with 1; it's a boolean
+//         \Log::info('Blocked user attempted to log in:', ['email' => $fields['email']]);
+//         return response()->json([
+//             'message' => 'User not allowed. Kindly contact admin.',
+//             'blocked' => true
+//         ], 403); // Forbidden
+//     }
+
+//     // Create a token for the user
+//     $token = $user->createToken('webapp')->plainTextToken;
+
+//     // Prepare response
+//     $response = [
+//         'user' => [
+//             'id' => $user->id,
+//             'name' => $user->name,
+//             'email' => $user->email,
+//             'mobile' => $user->mobile,
+//             'speciality' => $user->speciality,
+//             'education' => $user->education,
+//             'registration_number' =>$user->registration_number,
+//         ],
+//         'token' => $token
+//     ];
+
+//     \Log::info('User logged in successfully:', ['email' => $fields['email']]);
+
+//     return response()->json($response, 200); // OK
+// }
+
+// ##############################################################################
+
+
+
+public function login(Request $request)
 {
     // Validate the incoming request data
     $fields = $request->validate([
@@ -176,14 +233,14 @@ class AuthController extends Controller
 
     // Prepare response
     $response = [
+        'doctorId' => $user->id, // Change to return doctorId instead of user
         'user' => [
-            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'mobile' => $user->mobile,
             'speciality' => $user->speciality,
             'education' => $user->education,
-            'registration_number' =>$user->registration_number,
+            'registration_number' => $user->registration_number,
         ],
         'token' => $token
     ];
@@ -193,6 +250,23 @@ class AuthController extends Controller
     return response()->json($response, 200); // OK
 }
 
+// ####################################################################
+// public function login(Request $request)
+// {
+//     $credentials = $request->only('email', 'password');
+
+//     if (Auth::attempt($credentials)) {
+//         $user = Auth::user();
+//         $token = $user->createToken('YourAppName')->accessToken;
+
+//         return response()->json([
+//             'token' => $token,
+//             'doctorId' => $user->id, // Assuming the user's ID is the doctor ID
+//         ]);
+//     }
+
+//     return response()->json(['error' => 'Unauthorized'], 401);
+// }
 
 
 // public function login(Request $request)
@@ -257,6 +331,9 @@ class AuthController extends Controller
         auth()->user()->tokens()->delete();
         return ['message'=>'Logged out'];
     }
+
+   
+
 
 
     
